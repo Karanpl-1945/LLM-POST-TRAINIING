@@ -1,0 +1,56 @@
+services:
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "8088:80"
+    volumes:
+      - ./deployment/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api
+
+  api:
+    build:
+      context: .
+      dockerfile: deployment/docker/Dockerfile.api
+    environment:
+      VLLM_BASE_URL: http://vllm:8000/v1
+      VLLM_API_KEY: local-dev-key
+      MODEL_ID: posttrainx
+      REDIS_URL: redis://redis:6379/0
+      PRODUCT_CATALOG_PATH: /app/data/sample/products.json
+    depends_on:
+      - redis
+      - vllm
+
+  redis:
+    image: redis:7-alpine
+
+  # Requires NVIDIA Container Toolkit. Mount/change FINAL_MODEL_PATH to your merged checkpoint.
+  vllm:
+    image: vllm/vllm-openai:latest
+    runtime: nvidia
+    environment:
+      HUGGING_FACE_HUB_TOKEN: ${HF_TOKEN:-}
+    volumes:
+      - ./outputs:/models:ro
+    command:
+      - --model
+      - /models/final-merged
+      - --served-model-name
+      - posttrainx
+      - --api-key
+      - local-dev-key
+      - --enable-prefix-caching
+      - --kv-cache-dtype
+      - fp8
+      - --gpu-memory-utilization
+      - "0.90"
+      - --max-model-len
+      - "4096"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
