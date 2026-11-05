@@ -4,7 +4,8 @@ import time
 from typing import Any
 
 from pyspark.ml.feature import HashingTF, MinHashLSH, NGram, RegexTokenizer
-from pyspark.sql import DataFrame, SparkSession, functions as F
+from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import functions as F
 
 
 def build_spark(app_name: str = "posttrainx-dedup", shuffle_partitions: int | None = None) -> SparkSession:
