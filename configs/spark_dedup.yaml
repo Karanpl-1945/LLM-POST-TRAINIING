@@ -1,0 +1,15 @@
+input:
+  path: data/raw/corpus.jsonl
+  format: json
+  id_col: id
+  text_col: text
+output:
+  path: data/processed/deduplicated
+  format: parquet
+spark:
+  shuffle_partitions: 400
+minhash:
+  ngram: 5
+  num_features: 1048576
+  num_hash_tables: 8
+  jaccard_similarity_threshold: 0.85
