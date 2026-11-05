@@ -1,0 +1,5 @@
+[
+  {"id":"shoe-001","brand":"Nike","name":"Pegasus Road Runner","category":"running shoes","color":"black","price_inr":3499,"sizes":[8,9,10],"in_stock":true},
+  {"id":"shoe-002","brand":"Adidas","name":"Duramo Speed","category":"running shoes","color":"blue","price_inr":2999,"sizes":[7,8,9],"in_stock":true},
+  {"id":"shirt-001","brand":"Roadster","name":"Cotton Casual Shirt","category":"shirt","color":"black","price_inr":999,"sizes":["M","L","XL"],"in_stock":true}
+]
