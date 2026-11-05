@@ -1,0 +1,16 @@
+server:
+  base_url: http://localhost:8000/v1
+  api_key: local-dev-key
+  model: posttrainx
+benchmark:
+  concurrency: 16
+  repeats: 2
+  max_tokens: 128
+  temperature: 0.0
+  timeout_s: 120
+  output: outputs/serving_benchmark.json
+prompts:
+  - Explain gradient descent in simple terms.
+  - Suggest black running shoes under 4000 rupees.
+  - What is the difference between LoRA and QLoRA?
+  - Explain KV caching in one paragraph.
