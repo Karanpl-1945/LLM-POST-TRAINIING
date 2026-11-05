@@ -1,0 +1,2 @@
+{"prompt":"Explain LoRA simply.","chosen":"LoRA freezes the original weight matrix and learns a low-rank update using two smaller trainable matrices.","rejected":"LoRA retrains every parameter of the model from scratch."}
+{"prompt":"Why use KV cache?","chosen":"It avoids recomputing key and value tensors for previously processed tokens during decoding.","rejected":"It stores model gradients so inference can backpropagate faster."}
