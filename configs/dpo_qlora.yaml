@@ -1,0 +1,46 @@
+seed: 42
+model:
+  # Quantize the merged SFT checkpoint on load, then train a fresh DPO adapter.
+  id: outputs/sft-merged-bf16
+  dtype: bf16
+  trust_remote_code: false
+
+dataset:
+  source: local
+  path: data/processed/dpo_preferences.jsonl
+  train_split: train
+  eval_fraction: 0.02
+
+peft:
+  method: qlora
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: all-linear
+  quant_type: nf4
+  compute_dtype: bf16
+  double_quant: true
+  gradient_checkpointing: true
+
+training:
+  output_dir: outputs/dpo-qlora
+  num_train_epochs: 1
+  per_device_train_batch_size: 2
+  per_device_eval_batch_size: 2
+  gradient_accumulation_steps: 4
+  learning_rate: 0.000005
+  warmup_ratio: 0.03
+  lr_scheduler_type: cosine
+  max_grad_norm: 1.0
+  max_length: 2048
+  beta: 0.1
+  loss_type: sigmoid
+  precompute_ref_log_probs: false
+  gradient_checkpointing: true
+  precision: bf16
+  logging_steps: 10
+  save_steps: 250
+  eval_steps: 250
+  save_total_limit: 2
+  dataset_num_proc: 4
+  report_to: none
