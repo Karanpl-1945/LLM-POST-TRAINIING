@@ -1,0 +1,2 @@
+{"messages":[{"role":"user","content":"What is gradient descent?"},{"role":"assistant","content":"Gradient descent is an optimization method that updates parameters in the direction that reduces the loss."}]}
+{"messages":[{"role":"user","content":"What is KV caching?"},{"role":"assistant","content":"KV caching stores previous attention key and value tensors so autoregressive decoding does not recompute them for every generated token."}]}
