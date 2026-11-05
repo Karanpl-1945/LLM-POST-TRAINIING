@@ -4,7 +4,7 @@ import asyncio
 import json
 import statistics
 import time
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
@@ -62,7 +62,14 @@ async def _one_request(
                     output_tokens = int(usage["completion_tokens"])
         end = time.perf_counter()
         return RequestMetric(True, None if first_token_at is None else first_token_at - start, end - start, output_tokens)
-    except Exception as exc:  # benchmark should record failures, not crash the whole run
+    except (
+        httpx.HTTPError,
+        httpx.InvalidURL,
+        AttributeError,
+        KeyError,
+        TypeError,
+        ValueError,
+    ) as exc:  # record request and malformed-response failures
         end = time.perf_counter()
         return RequestMetric(False, None, end - start, 0, repr(exc))
 
@@ -71,7 +78,7 @@ def _percentile(xs: list[float], p: float) -> float | None:
     if not xs:
         return None
     xs = sorted(xs)
-    idx = min(int(round((len(xs) - 1) * p)), len(xs) - 1)
+    idx = min(round((len(xs) - 1) * p), len(xs) - 1)
     return xs[idx]
 
 
