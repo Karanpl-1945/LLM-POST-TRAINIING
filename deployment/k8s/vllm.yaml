@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: posttrainx-vllm
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: posttrainx-vllm}
+  template:
+    metadata:
+      labels: {app: posttrainx-vllm}
+    spec:
+      containers:
+        - name: vllm
+          image: vllm/vllm-openai:latest
+          args:
+            - --model
+            - /models/final-merged
+            - --served-model-name
+            - posttrainx
+            - --api-key
+            - $(VLLM_API_KEY)
+            - --enable-prefix-caching
+            - --kv-cache-dtype
+            - fp8
+            - --gpu-memory-utilization
+            - "0.90"
+            - --max-model-len
+            - "4096"
+          env:
+            - name: VLLM_API_KEY
+              valueFrom: {secretKeyRef: {name: posttrainx-secrets, key: vllm-api-key}}
+          ports: [{containerPort: 8000}]
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+              memory: "16Gi"
+            requests:
+              nvidia.com/gpu: 1
+              memory: "8Gi"
+          volumeMounts:
+            - {name: model, mountPath: /models, readOnly: true}
+      volumes:
+        - name: model
+          persistentVolumeClaim: {claimName: posttrainx-model-pvc}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: posttrainx-vllm
+spec:
+  selector: {app: posttrainx-vllm}
+  ports:
+    - {name: http, port: 8000, targetPort: 8000}
