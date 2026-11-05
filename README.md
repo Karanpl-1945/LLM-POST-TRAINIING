@@ -26,16 +26,16 @@ The application example is a shopping assistant. A FastAPI backend retrieves pro
 
 ## What the project includes
 
-| Stage | Implementation | Output |
-| --- | --- | --- |
-| Optional corpus preprocessing | PySpark normalization and MinHash LSH near-duplicate removal | Parquet records and preprocessing metrics |
-| SFT | TRL trainers with LoRA or 4-bit QLoRA, plus configurable sequence packing | SFT adapter and training metrics |
-| Preference preparation | Ranked sibling replies from OpenAssistant OASST1 | Prompt/chosen/rejected JSONL |
-| DPO | Preference training from a merged SFT checkpoint | DPO adapter and training metrics |
-| Model export | PEFT adapter merging into a higher-precision base model | Standalone model checkpoint |
-| Inference | vLLM with prefix caching and configurable KV-cache precision | OpenAI-compatible model API |
-| Product-chat demonstration | FastAPI, a local product catalog, and Redis rate limiting | Streamed text responses |
-| Deployment and measurement | Nginx, Docker Compose, Kubernetes templates, and benchmark scripts | Deployment examples and runtime measurements |
+| Stage                         | Implementation                                                            | Output                                       |
+| ----------------------------- | ------------------------------------------------------------------------- | -------------------------------------------- |
+| Optional corpus preprocessing | PySpark normalization and MinHash LSH near-duplicate removal              | Parquet records and preprocessing metrics    |
+| SFT                           | TRL trainers with LoRA or 4-bit QLoRA, plus configurable sequence packing | SFT adapter and training metrics             |
+| Preference preparation        | Ranked sibling replies from OpenAssistant OASST1                          | Prompt/chosen/rejected JSONL                 |
+| DPO                           | Preference training from a merged SFT checkpoint                          | DPO adapter and training metrics             |
+| Model export                  | PEFT adapter merging into a higher-precision base model                   | Standalone model checkpoint                  |
+| Inference                     | vLLM with prefix caching and configurable KV-cache precision              | OpenAI-compatible model API                  |
+| Product-chat demonstration    | FastAPI, a local product catalog, and Redis rate limiting                 | Streamed text responses                      |
+| Deployment and measurement    | Nginx, Docker Compose, Kubernetes templates, and benchmark scripts        | Deployment examples and runtime measurements |
 
 LoRA trains low-rank adapter weights while keeping the base model frozen. The QLoRA configurations also load the base weights in 4-bit form. Both approaches are available for SFT and DPO so their quality, runtime, and memory use can be compared.
 
@@ -90,14 +90,14 @@ VALIDATION.md            Previously reported checks and untested workflows
 
 Run commands from the directory containing `pyproject.toml`. Shell examples below use Bash unless marked otherwise.
 
-| Component | Requirements |
-| --- | --- |
-| Python package | Python 3.10–3.12; the API image and CI configuration use Python 3.11 |
-| LoRA / QLoRA training | A compatible PyTorch environment; the example configurations use BF16 and target GPU training |
-| QLoRA and vLLM examples | Supported Linux, NVIDIA driver, CUDA, and GPU combinations |
-| Spark preprocessing | Java compatible with the installed PySpark release and an appropriate Spark environment |
-| Product-chat API | A running model server and a reachable Redis instance |
-| GPU containers | Docker, NVIDIA Container Toolkit, and a merged model checkpoint |
+| Component               | Requirements                                                                                  |
+| ----------------------- | --------------------------------------------------------------------------------------------- |
+| Python package          | Python 3.10–3.12; the API image and CI configuration use Python 3.11                         |
+| LoRA / QLoRA training   | A compatible PyTorch environment; the example configurations use BF16 and target GPU training |
+| QLoRA and vLLM examples | Supported Linux, NVIDIA driver, CUDA, and GPU combinations                                    |
+| Spark preprocessing     | Java compatible with the installed PySpark release and an appropriate Spark environment       |
+| Product-chat API        | A running model server and a reachable Redis instance                                         |
+| GPU containers          | Docker, NVIDIA Container Toolkit, and a merged model checkpoint                               |
 
 Create a virtual environment:
 
@@ -114,12 +114,12 @@ On Windows PowerShell, activate it with:
 
 Install the components needed on that machine:
 
-| Purpose | Installation command |
-| --- | --- |
-| Lightweight tests and linting | `python -m pip install -e ".[dev]"` |
-| Training and model evaluation | `python -m pip install -e ".[train,eval]"` |
-| Spark preprocessing | `python -m pip install -e ".[spark]"` |
-| Model serving, API, and serving benchmarks | `python -m pip install -e ".[serve]"` |
+| Purpose                                    | Installation command                         |
+| ------------------------------------------ | -------------------------------------------- |
+| Lightweight tests and linting              | `python -m pip install -e ".[dev]"`        |
+| Training and model evaluation              | `python -m pip install -e ".[train,eval]"` |
+| Spark preprocessing                        | `python -m pip install -e ".[spark]"`      |
+| Model serving, API, and serving benchmarks | `python -m pip install -e ".[serve]"`      |
 
 The `eval` extra alone does not install the model-loading libraries; use it with `train`. The `serve` extra also installs vLLM on Linux, including when used for the API. Dependency ranges and container tags have not been pinned to a validated hardware/software combination.
 
@@ -260,14 +260,14 @@ This applies the DPO adapter to the merged SFT model. Serve the resulting full c
 
 ### Expected artifacts
 
-| Artifact | Default location |
-| --- | --- |
-| SFT adapters | `outputs/sft-lora/final_adapter/` or `outputs/sft-qlora/final_adapter/` |
-| Merged SFT model | `outputs/sft-merged-bf16/` |
-| Preference training data | `data/processed/dpo_preferences.jsonl` |
-| DPO adapters | `outputs/dpo-lora/final_adapter/` or `outputs/dpo-qlora/final_adapter/` |
-| Merged serving model | `outputs/final-merged/` |
-| Training metrics | `train_metrics.json` inside each training output directory |
+| Artifact                 | Default location                                                            |
+| ------------------------ | --------------------------------------------------------------------------- |
+| SFT adapters             | `outputs/sft-lora/final_adapter/` or `outputs/sft-qlora/final_adapter/` |
+| Merged SFT model         | `outputs/sft-merged-bf16/`                                                |
+| Preference training data | `data/processed/dpo_preferences.jsonl`                                    |
+| DPO adapters             | `outputs/dpo-lora/final_adapter/` or `outputs/dpo-qlora/final_adapter/` |
+| Merged serving model     | `outputs/final-merged/`                                                   |
+| Training metrics         | `train_metrics.json` inside each training output directory                |
 
 These files are produced by the workflow and are not bundled with the repository.
 
@@ -346,10 +346,10 @@ curl -N http://localhost:8080/v1/product-chat \
   -d '{"query":"Show me black Nike running shoes"}'
 ```
 
-| Endpoint | Behavior |
-| --- | --- |
+| Endpoint                  | Behavior                                                               |
+| ------------------------- | ---------------------------------------------------------------------- |
 | `POST /v1/product-chat` | Accepts a query and optional conversation; returns a plain-text stream |
-| `GET /healthz` | Returns API process status; does not check Redis or model readiness |
+| `GET /healthz`          | Returns API process status; does not check Redis or model readiness    |
 
 The Redis limiter defaults to 60 requests per minute per supplied identity, configurable through `APP_RPM`. `X-User-Id` is a demo identifier and is not authenticated.
 
@@ -398,12 +398,12 @@ python scripts/benchmark_serving.py --config configs/benchmark.yaml
 
 The default configuration targets `http://localhost:8000/v1`. Docker Compose does not publish that model-server port; use a reachable inference endpoint when benchmarking a container deployment.
 
-| Measurement | Output |
-| --- | --- |
-| Request and output-token throughput | `outputs/serving_benchmark.json` |
-| Time to first token (TTFT) and end-to-end latency: mean, p50, p95 | Same benchmark JSON |
-| Successful/failed requests and per-request measurements | Same benchmark JSON |
-| Sampled GPU memory and utilization | `outputs/gpu_memory.csv` |
+| Measurement                                                       | Output                             |
+| ----------------------------------------------------------------- | ---------------------------------- |
+| Request and output-token throughput                               | `outputs/serving_benchmark.json` |
+| Time to first token (TTFT) and end-to-end latency: mean, p50, p95 | Same benchmark JSON                |
+| Successful/failed requests and per-request measurements           | Same benchmark JSON                |
+| Sampled GPU memory and utilization                                | `outputs/gpu_memory.csv`         |
 
 The sample workload contains four prompts repeated twice, so it creates eight requests. The configured concurrency of 16 is an upper bound; increase the workload for sustained concurrency. Token throughput uses completion-token usage reported by the server; missing usage can produce zero-token measurements.
 
